@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>アプリ設定</title>
+    <title>アプリ起動</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -17,49 +17,59 @@
             color: #fff;
             font-family: sans-serif;
             text-align: center;
-            padding: 20px;
             display: flex;
             flex-direction: column;
             justify-content: center;
-            height: 90vh;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
         }
+        .btn {
+            background-color: #007AFF; /* iPhoneらしい青 */
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(0,122,255,0.4);
+            transition: opacity 0.2s;
+        }
+        .btn:active { opacity: 0.7; }
         .icon-display {
-            width: 100px;
-            height: 100px;
-            border-radius: 22px;
-            margin: 0 auto 20px;
-            background-color: #fff;
-            /* 画像を表示 */
+            width: 80px; height: 80px;
             background-image: url('Gemini_Generated_Image_9tl11b9tl11b9tl1.png');
             background-size: cover;
+            border-radius: 18px;
+            margin-bottom: 20px;
         }
-        p { line-height: 1.6; }
-        .arrow { font-size: 30px; margin-top: 20px; animation: bounce 1.5s infinite; }
-        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+        p { color: #ccc; font-size: 14px; }
     </style>
 
     <script>
         // 【重要】ここにあなたのGASアプリのURLを貼り付けてください
         const gasUrl = "https://script.google.com/a/macros/kofloc.co.jp/s/AKfycbyoUfP-9kX-Rw75bdydyr69ja1HyhSdXJ-jGaIR5y8/dev";
 
-        // 【修正2】ホーム画面から起動した時だけ転送するロジック
-        // Safariで開いている時は転送せず、アイコン追加を促します
-        if (window.navigator.standalone === true) {
-            window.location.replace(gasUrl);
-        }
+        // ページ読み込み時に自動転送を試みる
+        window.onload = function() {
+            // ホーム画面から開かれた(standalone)か、Android等の場合
+            const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+            
+            if (isStandalone) {
+                // 自動転送
+                window.location.replace(gasUrl);
+            }
+            
+            // ボタンにもURLをセットする（自動で飛ばない時の保険）
+            document.getElementById('launchBtn').href = gasUrl;
+        };
     </script>
 </head>
 <body>
     <div class="icon-display"></div>
-    <h2>あとワンステップ！</h2>
-    <p>
-        この画面をホーム画面に追加してください。<br>
-        設定したアイコンで追加されます。
-    </p>
-    <div class="arrow">⬇︎</div>
-    <p style="font-size: 0.9em; opacity: 0.8;">
-        画面下の共有ボタン<br>
-        「ホーム画面に追加」
-    </p>
+    <p>アプリを起動します...</p>
+    
+    <a id="launchBtn" href="#" class="btn">アプリを開く</a>
 </body>
 </html>
