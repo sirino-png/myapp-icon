@@ -3,7 +3,7 @@
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>アプリ起動中...</title>
+    <title>アプリ設定</title>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,23 +13,53 @@
 
     <style>
         body {
-            background-color: #000;
+            background-color: #222;
+            color: #fff;
+            font-family: sans-serif;
+            text-align: center;
+            padding: 20px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
+            height: 90vh;
         }
+        .icon-display {
+            width: 100px;
+            height: 100px;
+            border-radius: 22px;
+            margin: 0 auto 20px;
+            background-color: #fff;
+            /* 画像を表示 */
+            background-image: url('Gemini_Generated_Image_9tl11b9tl11b9tl1.png');
+            background-size: cover;
+        }
+        p { line-height: 1.6; }
+        .arrow { font-size: 30px; margin-top: 20px; animation: bounce 1.5s infinite; }
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
     </style>
 
     <script>
         // 【重要】ここにあなたのGASアプリのURLを貼り付けてください
         const gasUrl = "https://script.google.com/a/macros/kofloc.co.jp/s/AKfycbzIQQjS6j-13NSM_lUiiZv09UkU5H5qJjR5R9nSWjr2dS2utGliQLc991wahITcAUMI/exec";
 
-        // 転送処理
-        window.location.replace(gasUrl);
+        // 【修正2】ホーム画面から起動した時だけ転送するロジック
+        // Safariで開いている時は転送せず、アイコン追加を促します
+        if (window.navigator.standalone === true) {
+            window.location.replace(gasUrl);
+        }
     </script>
 </head>
 <body>
+    <div class="icon-display"></div>
+    <h2>あとワンステップ！</h2>
+    <p>
+        この画面をホーム画面に追加してください。<br>
+        設定したアイコンで追加されます。
+    </p>
+    <div class="arrow">⬇︎</div>
+    <p style="font-size: 0.9em; opacity: 0.8;">
+        画面下の共有ボタン<br>
+        「ホーム画面に追加」
+    </p>
 </body>
 </html>
