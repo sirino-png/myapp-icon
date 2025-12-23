@@ -1,18 +1,22 @@
+
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
-    <title>Loading...</title>
+    <title>アプリ起動</title>
+    
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <link rel="apple-touch-icon" href="Gemini_Generated_Image_9tl11b9tl11b9tl1.png">
-    <link rel="icon" href="Gemini_Generated_Image_9tl11b9tl11b9tl1.png">
+
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="icon" type="image/png" sizes="192x192" href="Gemini_Generated_Image_9tl11b9tl11b9tl1.png">
+    <link rel="shortcut icon" href="Gemini_Generated_Image_9tl11b9tl11b9tl1.png">
 
     <style>
         body {
-            background-color: #000; /* 転送待ちの間の背景色 */
+            background-color: #111;
             color: #fff;
             font-family: sans-serif;
             text-align: center;
@@ -22,44 +26,98 @@
             align-items: center;
             height: 100vh;
             margin: 0;
+            padding: 20px;
         }
-        /* PCやホーム画面から開いた時は、画面要素を隠して真っ黒にする */
-        .content { display: none; }
+        
+        /* ボタンのデザイン */
+        .btn {
+            background-color: #007AFF;
+            color: white;
+            padding: 15px 40px;
+            text-decoration: none;
+            font-size: 18px;
+            font-weight: bold;
+            border-radius: 30px;
+            margin-top: 30px;
+            display: inline-block;
+            box-shadow: 0 4px 15px rgba(0,122,255,0.4);
+        }
+        
+        /* アイコン画像表示 */
+        .app-icon {
+            width: 100px;
+            height: 100px;
+            border-radius: 22px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+        }
+
+        /* 案内文 */
+        .guide-text { line-height: 1.6; color: #ddd; }
+        
+        /* デフォルトではコンテンツを隠さない（黒い画面対策） */
+        #content { display: block; }
     </style>
 
     <script>
         // 【重要】ここにあなたのGASアプリのURLを貼り付けてください
         const gasUrl = "https://script.google.com/a/macros/kofloc.co.jp/s/AKfycbyoUfP-9kX-Rw75bdydyr69ja1HyhSdXJ-jGaIR5y8/dev";
 
-        // ユーザーが何を使っているか判定
-        const ua = navigator.userAgent.toLowerCase();
-        const isMobile = /iphone|ipad|ipod|android/.test(ua);
-        const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+        window.onload = function() {
+            // ボタンにURLをセット（これが命綱です）
+            document.getElementById('launchBtn').href = gasUrl;
 
-        // 【転送ロジック】
-        // 1. PCの場合 (スマホじゃない場合)
-        // 2. スマホだけど、すでにホーム画面から起動している場合
-        // どちらかなら、即座にGASアプリへ飛ばす
-        if (!isMobile || isStandalone) {
-            window.location.replace(gasUrl);
-        } else {
-            // スマホのブラウザ(Safari等)で見ている時だけ、画面の中身を表示する
-            window.onload = function() {
-                document.querySelector('.content').style.display = 'block';
-            };
-        }
+            // ユーザー環境の判定
+            const ua = navigator.userAgent.toLowerCase();
+            const isMobile = /iphone|ipad|ipod|android/.test(ua);
+            // iOSのホーム画面 or Androidの全画面モード判定
+            const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+
+            // PCなら即転送
+            if (!isMobile) {
+                document.body.innerHTML = "PCより転送中...";
+                window.location.href = gasUrl;
+                return;
+            }
+
+            // スマホの「ホーム画面」から起動している場合
+            if (isStandalone) {
+                // 案内文を「起動中」に変える
+                document.getElementById('message').innerText = "アプリを起動しています...";
+                document.getElementById('sub-message').style.display = 'none';
+                
+                // 自動転送を試みる
+                setTimeout(function() {
+                    window.location.href = gasUrl;
+                }, 100); // ほんの少し待ってから飛ばす
+            } 
+            // スマホの「ブラウザ(Safari/Chrome)」で見ている場合
+            else {
+                // そのまま案内を表示（何もしない）
+                // ユーザーはここで「ホーム画面に追加」を行います
+            }
+        };
     </script>
 </head>
 <body>
-    <div class="content">
-        <img src="Gemini_Generated_Image_9tl11b9tl11b9tl1.png" style="width:100px; border-radius:20px; margin-bottom:20px;">
-        <h2>設定はあと少し！</h2>
-        <p>
-            この画面を「ホーム画面に追加」してください。<br>
-            追加したアイコンから起動すると<br>
-            自動でアプリが開きます。
-        </p>
-        <div style="font-size:30px; margin-top:20px;">⬇︎</div>
+    <div id="content">
+        <img src="Gemini_Generated_Image_9tl11b9tl11b9tl1.png" class="app-icon">
+        
+        <h2 id="message">設定はあと少し！</h2>
+        
+        <div id="sub-message" class="guide-text">
+            <p>
+                この画面を「ホーム画面に追加」してください。<br>
+                追加したアイコンから起動できます。
+            </p>
+            <div style="font-size:30px; margin-top:10px; animation: bounce 1.5s infinite;">⬇︎</div>
+        </div>
+
+        <a id="launchBtn" href="#" class="btn">アプリを開く</a>
     </div>
+
+    <style>
+        @keyframes bounce { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(10px); } }
+    </style>
 </body>
 </html>
