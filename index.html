@@ -1,92 +1,95 @@
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
     <meta charset="UTF-8">
     <title>Loading...</title>
     
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="apple-touch-icon" href="Gemini_Generated_Image_9tl11b9tl11b9tl1.png">
-
+    <link rel="apple-touch-icon" href="icon.png">
+    
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#000000">
 
     <style>
         body {
-            background-color: #111;
+            background-color: #000;
             color: #fff;
             font-family: sans-serif;
             text-align: center;
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
-            padding: 20px;
         }
         .btn {
             background-color: #007AFF;
             color: white;
-            padding: 15px 40px;
-            text-decoration: none;
-            font-size: 18px;
-            font-weight: bold;
+            padding: 15px 30px;
             border-radius: 30px;
-            margin-top: 30px;
-            display: inline-block;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 20px;
+            font-size: 18px;
         }
-        .app-icon {
-            width: 100px; height: 100px; border-radius: 22px; margin-bottom: 20px;
+        .debug-info {
+            margin-top: 20px;
+            font-size: 12px;
+            color: #888;
+            border: 1px solid #333;
+            padding: 10px;
         }
-        #guide-message { display: none; } /* 最初は案内を隠す */
+        img { width: 100px; border-radius: 20px; margin-bottom: 10px; }
     </style>
 
     <script>
-        // 【重要】ここにあなたのGASアプリのURLを貼り付けてください
+        // 【重要】GASのURL
         const gasUrl = "https://script.google.com/a/macros/kofloc.co.jp/s/AKfycbyoUfP-9kX-Rw75bdydyr69ja1HyhSdXJ-jGaIR5y8/dev";
 
         window.onload = function() {
-            // ボタンにURLをセット
+            // ボタンにURLセット
             document.getElementById('launchBtn').href = gasUrl;
 
+            // 状態判定
+            const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
+            const userAgent = navigator.userAgent;
+
+            // デバッグ表示（画面に現在の状態を表示します）
+            const statusText = isStandalone ? "アプリモード(Standalone)" : "ブラウザモード(Browser)";
+            document.getElementById('debug').innerText = "状態: " + statusText;
+
             // PCなら即転送
-            const ua = navigator.userAgent.toLowerCase();
-            if (!/iphone|ipad|ipod|android/.test(ua)) {
-                window.location.replace(gasUrl);
-                return;
+            if (!/iphone|ipad|ipod|android/.test(userAgent.toLowerCase())) {
+                 window.location.replace(gasUrl);
+                 return;
             }
 
-            // スマホの場合の処理
-            // 「ホーム画面から」か「ブラウザ」かを判定
-            const isStandalone = window.navigator.standalone || window.matchMedia('(display-mode: standalone)').matches;
-
+            // アプリモードなら転送
             if (isStandalone) {
-                // ホーム画面から起動した場合 -> 即転送
-                document.body.innerHTML = "<p>起動中...</p>";
-                window.location.replace(gasUrl);
+                document.getElementById('msg').innerText = "起動中...";
+                // 少し待ってから転送（Androidの認識バグ対策）
+                setTimeout(function() {
+                    window.location.replace(gasUrl);
+                }, 500);
             } else {
-                // ブラウザ(Safari/Chrome)の場合 -> 案内を表示
-                // ★Android Chromeで「アプリ」として認識させるために重要
-                document.getElementById('guide-message').style.display = 'block';
+                // ブラウザモード
+                document.getElementById('content').style.display = 'block';
             }
         };
     </script>
 </head>
 <body>
-    <img src="Gemini_Generated_Image_9tl11b9tl11b9tl1.png" class="app-icon">
-    
-    <div id="guide-message">
-        <h2>設定はあと少し！</h2>
-        <p>
-            この画面を「ホーム画面に追加」してください。<br>
-            正しいアイコンでアプリ化されます。
-        </p>
-        <div style="font-size:30px; margin-top:10px;">⬇︎</div>
-    </div>
+    <div id="content">
+        <img src="icon.png" alt="icon">
+        <h2 id="msg">設定はあと少し</h2>
+        <p>この画面を「ホーム画面に追加」してください。</p>
+        
+        <a id="launchBtn" href="#" class="btn">アプリを開く</a>
 
-    <a id="launchBtn" href="#" class="btn" style="margin-top:50px; opacity:0.7; font-size:14px;">アプリを開く</a>
+        <div class="debug-info" id="debug">判定中...</div>
+    </div>
 </body>
 </html>
